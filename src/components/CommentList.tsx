@@ -1,5 +1,5 @@
-import React from "react";
-import styled from "styled-components";
+import React from 'react';
+import styled from 'styled-components';
 
 const Comment = styled.div`
   padding: 7px 10px;
@@ -39,32 +39,36 @@ const Button = styled.div`
 const data = [
   {
     id: 1,
-    profile_url: "https://picsum.photos/id/1/50/50",
-    author: "abc_1",
-    content: "UI 테스트는 어떻게 진행하나요",
-    createdAt: "2020-05-01",
+    profile_url: 'https://picsum.photos/id/1/50/50',
+    author: 'abc_1',
+    content: 'UI 테스트는 어떻게 진행하나요',
+    createdAt: '2020-05-01',
   },
 ];
 
 function CommentList() {
-  return data.map((comment, key) => (
-    <Comment key={key}>
-      <img src={comment.profile_url} alt="" />
+  return (
+    <>
+      {data.map((comment, key) => (
+        <Comment key={key}>
+          <img src={comment.profile_url} alt="" />
 
-      {comment.author}
+          {comment.author}
 
-      <CreatedAt>{comment.createdAt}</CreatedAt>
+          <CreatedAt>{comment.createdAt}</CreatedAt>
 
-      <Content>{comment.content}</Content>
+          <Content>{comment.content}</Content>
 
-      <Button>
-        <a>수정</a>
-        <a>삭제</a>
-      </Button>
+          <Button>
+            <a>수정</a>
+            <a>삭제</a>
+          </Button>
 
-      <hr />
-    </Comment>
-  ));
+          <hr />
+        </Comment>
+      ))}
+    </>
+  );
 }
 
 export default CommentList;

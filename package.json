@@ -29,7 +29,10 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "api": "npx json-server ./data.json --port 4000"
+    "api": "npx json-server ./data.json --port 4000",
+    "format": "prettier --write --cache .",
+    "lint": "eslint --cache .",
+    "postinstall": "husky install"
   },
   "eslintConfig": {
     "extends": [
@@ -50,6 +53,10 @@
     ]
   },
   "devDependencies": {
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "eslint": "^8.32.0",
+    "eslint-config-prettier": "^8.6.0",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.3"
   }
 }
