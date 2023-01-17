@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getCommentsInStore,
-  axiosComments,
+  axiosGetComments,
   getcurrentPageIdxInStore,
   getpagePerCommentsInStore,
+  axiosEraseComment,
 } from '../store/index';
 
 const Comment = styled.div`
@@ -61,7 +62,12 @@ function CommentList() {
   }, []);
 
   const getComments = async () => {
-    dispatch(axiosComments());
+    dispatch(axiosGetComments());
+  };
+
+  const clickEraseBtn = (e: any) => {
+    const eraseId = Number(e.target.dataset.id);
+    dispatch(axiosEraseComment(eraseId));
   };
   return (
     <>
@@ -78,7 +84,9 @@ function CommentList() {
             <Content>{comment.content}</Content>
             <Button>
               <a>수정</a>
-              <a>삭제</a>
+              <a onClick={clickEraseBtn} data-id={comment.id}>
+                삭제
+              </a>
             </Button>
             <hr />
           </Comment>
