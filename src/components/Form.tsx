@@ -37,10 +37,10 @@ function Form() {
     e.preventDefault();
     dispatch(
       axiosPostComment({
-        profile_url: profileRef?.current.value,
-        author: authorRef?.current.value,
-        content: contentRef?.current.value,
-        createdAt: createdAtRef?.current.value,
+        profile_url: profileRef.current?.value,
+        author: authorRef.current?.value,
+        content: contentRef.current?.value,
+        createdAt: createdAtRef.current?.value,
       }),
     );
   };
