@@ -1,4 +1,4 @@
-import React from 'react';
+import { axiosClient } from './api/AxiosClient';
 import CommentListContainer from './containers/CommentListContainer';
 import FormContainer from './containers/FormContainer';
 import PageListContainer from './containers/PageListContainer';
