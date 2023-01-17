@@ -1,21 +1,27 @@
 import styled from 'styled-components';
 import { CommentType } from '../type';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store';
-import { createComment } from '../store/commentSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store';
+import { createComment, editComment } from '../store/commentSlice';
+import { toggleEditMode } from '../store/editModeSlice';
 
-const initialState = {
+export const initialCommentState = {
   id: 0,
   profile_url: '',
   author: '',
   content: '',
   createdAt: '',
 };
+
 function Form() {
   const dispatch = useDispatch<AppDispatch>();
-  const [commentForm, setCommentForm] = useState<CommentType>(initialState);
-
+  const { isEdit, targetComment } = useSelector(
+    (state: RootState) => state.editMode,
+  );
+  const [commentForm, setCommentForm] =
+    useState<CommentType>(initialCommentState);
+  //TODO: 수정버튼 눌렀을때 초기 value 변경
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -26,16 +32,28 @@ function Form() {
   const submitComment = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(createComment(commentForm));
-    setCommentForm(initialState);
+    setCommentForm(initialCommentState);
+  };
+
+  const submitEditComment = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    commentForm.id = targetComment.id;
+    dispatch(editComment(commentForm));
+    setCommentForm(initialCommentState);
+    dispatch(toggleEditMode(false));
   };
 
   return (
     <FormStyle>
-      <form onSubmit={submitComment}>
+      <form onSubmit={isEdit ? submitEditComment : submitComment}>
         <input
           type="text"
           name="profile_url"
-          placeholder="https://picsum.photos/id/1/50/50"
+          placeholder={
+            isEdit
+              ? targetComment.profile_url
+              : 'https://picsum.photos/id/1/50/50'
+          }
           value={commentForm.profile_url}
           onChange={handleChange}
           required
@@ -44,14 +62,14 @@ function Form() {
         <input
           type="text"
           name="author"
-          placeholder="작성자"
+          placeholder={isEdit ? targetComment.author : '작성자'}
           value={commentForm.author}
           onChange={handleChange}
         />
         <br />
         <textarea
           name="content"
-          placeholder="내용"
+          placeholder={isEdit ? targetComment.content : '내용'}
           value={commentForm.content}
           onChange={handleChange}
           required
@@ -60,7 +78,7 @@ function Form() {
         <input
           type="text"
           name="createdAt"
-          placeholder="2020-05-30"
+          placeholder={isEdit ? targetComment.createdAt : '2020-05-30'}
           value={commentForm.createdAt}
           onChange={handleChange}
           required

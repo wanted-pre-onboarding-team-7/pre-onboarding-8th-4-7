@@ -17,6 +17,14 @@ export const createComment = createAsyncThunk(
   },
 );
 
+export const editComment = createAsyncThunk(
+  'editComment',
+  async (comment: CommentType) => {
+    const response = await axiosClient.put(comment);
+    return response;
+  },
+);
+
 export const deleteComment = createAsyncThunk(
   'deleteComment',
   async (commentId: number) => {
@@ -24,6 +32,7 @@ export const deleteComment = createAsyncThunk(
     return response;
   },
 );
+
 const commentSlice = createSlice({
   name: 'comment',
   initialState: initialState,
@@ -31,6 +40,7 @@ const commentSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(getComment.fulfilled, (state, action) => action.payload);
     builder.addCase(createComment.fulfilled, (state, action) => action.payload);
+    builder.addCase(editComment.fulfilled, (state, action) => action.payload);
     builder.addCase(deleteComment.fulfilled, (state, action) => action.payload);
   },
 });

@@ -28,6 +28,15 @@ class AxiosClient implements HttpClient {
     }
   }
 
+  async put(param: CommentType) {
+    try {
+      await this.instance.put(`comments/${param.id}`, param);
+    } catch (e) {
+      const { name } = e as Error;
+      console.error(name || '정보를 불러오는데 실패했습니다.');
+    }
+  }
+
   async delete(commentId: number) {
     try {
       await this.instance.delete(`comments/${commentId}`);

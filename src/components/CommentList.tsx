@@ -2,6 +2,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { AppDispatch, RootState } from '../store';
 import { deleteComment, getComment } from '../store/commentSlice';
+import { setTargetComment, toggleEditMode } from '../store/editModeSlice';
+import { MouseEventHandler } from 'react';
+import { CommentType } from '../type';
 
 function CommentList() {
   const dispatch = useDispatch<AppDispatch>();
@@ -10,8 +13,13 @@ function CommentList() {
   dispatch(getComment());
   // console.log('dd'); 컴포넌트 무한렌더링..
 
-  const clickDeleteButton = async (commentId: number) => {
+  const clickDeleteButton = (commentId: number) => {
     dispatch(deleteComment(commentId));
+  };
+
+  const clickEditButton = (comment: CommentType) => {
+    dispatch(toggleEditMode(true));
+    dispatch(setTargetComment(comment));
   };
 
   return (
@@ -27,7 +35,7 @@ function CommentList() {
           <Content>{comment.content}</Content>
 
           <Button>
-            <a>수정</a>
+            <a onClick={() => clickEditButton(comment)}>수정</a>
             <a onClick={() => clickDeleteButton(comment.id)}>삭제</a>
           </Button>
 

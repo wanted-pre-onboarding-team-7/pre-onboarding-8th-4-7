@@ -2,9 +2,23 @@
   "comments": [
     {
       "id": 1,
-      "profile_url": "https://picsum.photos/id/1/50/50",
-      "author": "abc_1",
-      "content": "리액트알려주삼",
+      "profile_url": "https://picsum.photos/id/23/50/50",
+      "author": "abc_23",
+      "content": "주변에 React 개발자 있없",
+      "createdAt": "2022-03-22"
+    },
+    {
+      "id": 2,
+      "profile_url": "https://picsum.photos/id/2/50/50",
+      "author": "abc_2",
+      "content": "2",
+      "createdAt": "2022-11-11"
+    },
+    {
+      "id": 3,
+      "profile_url": "https://picsum.photos/id/3/50/50",
+      "author": "33",
+      "content": "33",
       "createdAt": "2022-11-11"
     }
   ]
