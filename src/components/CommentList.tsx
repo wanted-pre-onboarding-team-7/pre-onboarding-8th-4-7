@@ -1,21 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { fetchComments, IComments } from '../slice/commentSlice';
+import { deleteComment, fetchComments } from '../slice/commentSlice';
+import { IComment } from '../type';
 import { useAppDispatch, useAppSelector } from '../hooks';
 
 function CommentList() {
-  const commentList = useAppSelector<IComments[]>(
+  const commentList = useAppSelector<IComment[]>(
     ({ comments }) => comments.value,
   );
   const dispatch = useAppDispatch();
   const getComments = async () => {
-    const resp = await dispatch(fetchComments());
-    console.log(resp, '디스패치!');
+    await dispatch(fetchComments());
   };
 
   useEffect(() => {
     getComments();
   }, []);
+
+  const clickDelComment = async (id: number) => {
+    await dispatch(deleteComment(id));
+  };
 
   return (
     <>
@@ -32,7 +36,7 @@ function CommentList() {
 
             <Button>
               <a>수정</a>
-              <a>삭제</a>
+              <a onClick={() => clickDelComment(comment.id)}>삭제</a>
             </Button>
 
             <hr />
