@@ -1,7 +1,12 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCommentsInStore, axiosComments } from '../store/index';
+import {
+  getCommentsInStore,
+  axiosComments,
+  getcurrentPageIdxInStore,
+  getpagePerCommentsInStore,
+} from '../store/index';
 
 const Comment = styled.div`
   padding: 7px 10px;
@@ -48,6 +53,9 @@ type Tcomments = {
 function CommentList() {
   const dispatch = useDispatch();
   const comments = useSelector(getCommentsInStore);
+  const currentPageIdx = useSelector(getcurrentPageIdxInStore);
+  const pagePerComments = useSelector(getpagePerCommentsInStore);
+
   useEffect(() => {
     getComments();
   }, []);
@@ -57,19 +65,21 @@ function CommentList() {
   };
   return (
     <>
-      {comments.map((comment: Tcomments) => (
-        <Comment key={comment.id}>
-          <img src={comment.profile_url} alt="" />
-          {comment.author}
-          <CreatedAt>{comment.createdAt}</CreatedAt>
-          <Content>{comment.content}</Content>
-          <Button>
-            <a>수정</a>
-            <a>삭제</a>
-          </Button>
-          <hr />
-        </Comment>
-      ))}
+      {comments
+        .slice(currentPageIdx - 1, currentPageIdx - 1 + pagePerComments)
+        .map((comment: Tcomments) => (
+          <Comment key={comment.id}>
+            <img src={comment.profile_url} alt="" />
+            {comment.author}
+            <CreatedAt>{comment.createdAt}</CreatedAt>
+            <Content>{comment.content}</Content>
+            <Button>
+              <a>수정</a>
+              <a>삭제</a>
+            </Button>
+            <hr />
+          </Comment>
+        ))}
     </>
   );
 }

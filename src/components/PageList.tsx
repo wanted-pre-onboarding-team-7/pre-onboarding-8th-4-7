@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { getCommentsInStore, getpagePerCommentsInStore } from '../store';
+import { useSelector } from 'react-redux';
 
 const PageListStyle = styled.div`
   margin-bottom: 20px;
@@ -22,14 +24,21 @@ const Page = styled.button`
 `;
 
 function PageList() {
-  const pageArray = [];
+  const comments = useSelector(getCommentsInStore);
 
-  pageArray.push(
-    // 임시로 페이지 하나만 설정했습니다.
-    <Page key="1">1</Page>,
+  const pagePerComments = useSelector(getpagePerCommentsInStore);
+
+  const pageArray = Array(Math.floor(comments.length / pagePerComments))
+    .fill(0)
+    .map((_, idx) => idx + 1);
+
+  return (
+    <PageListStyle>
+      {pageArray.map((v) => (
+        <Page key={v}>{v}</Page>
+      ))}
+    </PageListStyle>
   );
-
-  return <PageListStyle>{pageArray}</PageListStyle>;
 }
 
 export default PageList;
