@@ -1,20 +1,18 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
-const data = [
-  {
-    id: 1,
-    profile_url: 'https://picsum.photos/id/1/50/50',
-    author: 'abc_1',
-    content: 'UI 테스트는 어떻게 진행하나요',
-    createdAt: '2020-05-01',
-  },
-];
+import { AppDispatch, RootState } from '../store';
+import { getComment } from '../store/commentSlice';
 
 function CommentList() {
+  const dispatch = useDispatch<AppDispatch>();
+  const commentList = useSelector((state: RootState) => state.comment);
+  useEffect(() => {
+    dispatch(getComment());
+  });
   return (
     <>
-      {data.map((comment, key) => (
+      {commentList.map((comment, key) => (
         <Comment key={key}>
           <img src={comment.profile_url} alt="" />
 
