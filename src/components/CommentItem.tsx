@@ -1,15 +1,7 @@
-import { useEffect, useState } from 'react';
 import { axiosInstance } from '../util/axiosInstance';
-import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
-
-interface Icomment {
-  id: number;
-  profile_url: string;
-  author: string;
-  content: string;
-  createdAt: string;
-}
+import { Icomment } from '../type/interface';
+import styled from 'styled-components';
 
 function CommentItem({ comments }: { comments: Icomment }) {
   const dispatch = useDispatch();

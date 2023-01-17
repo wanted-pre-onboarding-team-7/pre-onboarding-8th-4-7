@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react';
 import { axiosInstance } from '../util/axiosInstance';
+import { Icomment } from '../type/interface';
 import CommentItem from './CommentItem';
-
-interface Icomment {
-  id: number;
-  profile_url: string;
-  author: string;
-  content: string;
-  createdAt: string;
-}
 
 function CommentList() {
   const [comments, setComments] = useState([]);
