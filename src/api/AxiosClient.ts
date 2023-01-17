@@ -21,9 +21,16 @@ class AxiosClient implements HttpClient {
 
   async post(param: CommentType) {
     try {
-      console.log(param);
       await this.instance.post(`comments`, param);
-      console.log('성공');
+    } catch (e) {
+      const { name } = e as Error;
+      console.error(name || '정보를 불러오는데 실패했습니다.');
+    }
+  }
+
+  async delete(commentId: number) {
+    try {
+      await this.instance.delete(`comments/${commentId}`);
     } catch (e) {
       const { name } = e as Error;
       console.error(name || '정보를 불러오는데 실패했습니다.');

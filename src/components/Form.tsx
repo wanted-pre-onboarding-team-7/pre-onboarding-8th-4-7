@@ -6,6 +6,7 @@ import { AppDispatch } from '../store';
 import { createComment } from '../store/commentSlice';
 
 const initialState = {
+  id: 0,
   profile_url: '',
   author: '',
   content: '',
@@ -27,6 +28,7 @@ function Form() {
     dispatch(createComment(commentForm));
     setCommentForm(initialState);
   };
+
   return (
     <FormStyle>
       <form onSubmit={submitComment}>

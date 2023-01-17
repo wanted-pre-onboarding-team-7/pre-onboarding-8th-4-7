@@ -1,15 +1,18 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { AppDispatch, RootState } from '../store';
-import { getComment } from '../store/commentSlice';
+import { deleteComment, getComment } from '../store/commentSlice';
 
 function CommentList() {
   const dispatch = useDispatch<AppDispatch>();
   const commentList = useSelector((state: RootState) => state.comment);
-  useEffect(() => {
-    dispatch(getComment());
-  });
+
+  dispatch(getComment());
+  // console.log('dd'); 컴포넌트 무한렌더링..
+
+  const clickDeleteButton = async (commentId: number) => {
+    dispatch(deleteComment(commentId));
+  };
 
   return (
     <>
@@ -25,7 +28,7 @@ function CommentList() {
 
           <Button>
             <a>수정</a>
-            <a>삭제</a>
+            <a onClick={() => clickDeleteButton(comment.id)}>삭제</a>
           </Button>
 
           <hr />

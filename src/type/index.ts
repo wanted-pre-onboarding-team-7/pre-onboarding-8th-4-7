@@ -1,7 +1,7 @@
 import { AxiosInstance, AxiosResponse } from 'axios';
 
 export interface CommentType {
-  id?: number;
+  id: number;
   profile_url: string;
   author: string;
   content: string;
