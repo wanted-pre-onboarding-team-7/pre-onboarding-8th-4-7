@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { axiosPostComment } from '../store';
 
 const FormStyle = styled.div`
   & > form {
@@ -25,6 +27,23 @@ const FormStyle = styled.div`
 `;
 
 function Form() {
+  const dispatch = useDispatch();
+  const profileRef = useRef<HTMLInputElement | null>(null);
+  const authorRef = useRef<HTMLInputElement | null>(null);
+  const contentRef = useRef<HTMLTextAreaElement | null>(null);
+  const createdAtRef = useRef<HTMLInputElement | null>(null);
+
+  const clickSubmit = (e: any) => {
+    e.preventDefault();
+    dispatch(
+      axiosPostComment({
+        profile_url: profileRef?.current.value,
+        author: authorRef?.current.value,
+        content: contentRef?.current.value,
+        createdAt: createdAtRef?.current.value,
+      }),
+    );
+  };
   return (
     <FormStyle>
       <form>
@@ -33,15 +52,29 @@ function Form() {
           name="profile_url"
           placeholder="https://picsum.photos/id/1/50/50"
           required
+          ref={profileRef}
         />
         <br />
-        <input type="text" name="author" placeholder="작성자" />
+        <input type="text" name="author" placeholder="작성자" ref={authorRef} />
         <br />
-        <textarea name="content" placeholder="내용" required></textarea>
+        <textarea
+          name="content"
+          placeholder="내용"
+          required
+          ref={contentRef}
+        ></textarea>
         <br />
-        <input type="text" name="createdAt" placeholder="2020-05-30" required />
+        <input
+          type="text"
+          name="createdAt"
+          placeholder="2020-05-30"
+          required
+          ref={createdAtRef}
+        />
         <br />
-        <button type="submit">등록</button>
+        <button type="submit" onClick={clickSubmit}>
+          등록
+        </button>
       </form>
     </FormStyle>
   );
