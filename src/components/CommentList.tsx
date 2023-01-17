@@ -66,7 +66,10 @@ function CommentList() {
   return (
     <>
       {comments
-        .slice(currentPageIdx - 1, currentPageIdx - 1 + pagePerComments)
+        .slice(
+          (currentPageIdx - 1) * pagePerComments,
+          (currentPageIdx - 1) * pagePerComments + pagePerComments,
+        )
         .map((comment: Tcomments) => (
           <Comment key={comment.id}>
             <img src={comment.profile_url} alt="" />
