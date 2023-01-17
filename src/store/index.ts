@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import commentSlice from '../slice/commentSlice';
+import EditModeSlice from '../slice/editModeSlice';
 
 export const store = configureStore({
   reducer: {
     comments: commentSlice,
+    isEditMode: EditModeSlice,
   },
   // TODO: middleware:
 });

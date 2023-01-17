@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { delComment, getComments, postComment } from '../api/api';
-import { CommentsState, IComment } from '../type';
+import { delComment, getComments, postComment, putComment } from '../api/api';
+import { CommentsState, IComment, IUpdateData } from '../type';
+import { saveLocalStorageComment } from '../util/localStorage-Fn';
 
 const INIT_STATE: CommentsState = {
   value: [],
@@ -25,10 +26,23 @@ export const deleteComment = createAsyncThunk(
   },
 );
 
+export const updateComment = createAsyncThunk(
+  'comment/updateComment',
+  (updateData: IUpdateData) => {
+    putComment(updateData.commentId, updateData.commentData);
+    return updateData;
+  },
+);
+
 export const commentSlice = createSlice({
   name: 'comments',
   initialState: INIT_STATE,
-  reducers: {},
+  reducers: {
+    updateCommentId: (state, { payload }) => {
+      const tmp = state.value.filter((ele) => ele.id === payload);
+      saveLocalStorageComment(tmp[0]);
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchComments.fulfilled, (state, { payload }: any) => {
@@ -39,8 +53,16 @@ export const commentSlice = createSlice({
       })
       .addCase(deleteComment.fulfilled, (state, { payload }: any) => {
         state.value = state.value.filter((ele) => ele.id !== payload);
+      })
+      .addCase(updateComment.fulfilled, (state, { payload }: any) => {
+        state.value = state.value.map((ele) => {
+          if (ele.id === payload.commentId) {
+            return { ...payload.commentData };
+          }
+          return ele;
+        });
       });
   },
 });
-
+export const { updateCommentId } = commentSlice.actions;
 export default commentSlice.reducer;

@@ -12,3 +12,7 @@ export const postComment = (comment: IComment) => {
 export const delComment = (commentId: number) => {
   return axiosClient.delete(`/${commentId}`);
 };
+
+export const putComment = (commentId: number, comment: IComment) => {
+  return axiosClient.put(`/${commentId}`, comment);
+};
