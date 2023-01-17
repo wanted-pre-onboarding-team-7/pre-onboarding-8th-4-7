@@ -30,13 +30,29 @@ export const axiosEraseComment = createAsyncThunk(
   },
 );
 
+type Tcomments = {
+  author: string;
+  content: string;
+  createdAt: string;
+  id: number;
+  profile_url: string;
+};
+
+type TcommentsState = {
+  comments: Tcomments[];
+  currentPageIdx: number;
+  pagePerComments: number;
+};
+
+const initialState: TcommentsState = {
+  comments: [],
+  currentPageIdx: 1,
+  pagePerComments: 4,
+};
+
 export const commentSlice = createSlice({
   name: 'comment',
-  initialState: {
-    comments: [],
-    currentPageIdx: 1,
-    pagePerComments: 4,
-  },
+  initialState,
   reducers: {
     changePageIdx: (state, action) => {
       state.currentPageIdx = action.payload.idx;
@@ -54,7 +70,8 @@ export const commentSlice = createSlice({
       })
       .addCase(axiosPostComment.fulfilled, (state, action) => {
         const copyComments = state.comments;
-        copyComments.push(action.payload);
+        const comment = action.payload;
+        copyComments.push(comment);
         state.comments = copyComments;
         state.currentPageIdx = 1;
       });
