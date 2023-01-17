@@ -17,6 +17,11 @@ export const commentSlice = createSlice({
     currentPageIdx: 1,
     pagePerComments: 4,
   },
+  reducers: {
+    changePageIdx: (state, action) => {
+      state.currentPageIdx = action.payload.idx;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(axiosComments.fulfilled, (state, action) => {
       state.comments = action.payload;
@@ -24,12 +29,7 @@ export const commentSlice = createSlice({
   },
 });
 
-export const {
-  getCommentsApi,
-  clickEditCommentBtn,
-  clickEraseCommentBtn,
-  clickAddCommentBtn,
-} = commentSlice.actions;
+export const { changePageIdx } = commentSlice.actions;
 
 export const getCommentsInStore = (state) => state.comment.comments;
 export const getcurrentPageIdxInStore = (state) => state.comment.currentPageIdx;

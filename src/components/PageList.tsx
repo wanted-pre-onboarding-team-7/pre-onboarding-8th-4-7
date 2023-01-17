@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import { getCommentsInStore, getpagePerCommentsInStore } from '../store';
-import { useSelector } from 'react-redux';
+import {
+  getCommentsInStore,
+  getpagePerCommentsInStore,
+  changePageIdx,
+} from '../store';
+import { useSelector, useDispatch } from 'react-redux';
 
 const PageListStyle = styled.div`
   margin-bottom: 20px;
@@ -24,18 +28,23 @@ const Page = styled.button`
 `;
 
 function PageList() {
+  const dispatch = useDispatch();
   const comments = useSelector(getCommentsInStore);
-
   const pagePerComments = useSelector(getpagePerCommentsInStore);
 
   const pageArray = Array(Math.floor(comments.length / pagePerComments))
     .fill(0)
     .map((_, idx) => idx + 1);
+  const clickPageBtn = (e: any) => {
+    dispatch(changePageIdx({ idx: e.target.innerText }));
+  };
 
   return (
     <PageListStyle>
       {pageArray.map((v) => (
-        <Page key={v}>{v}</Page>
+        <Page key={v} onClick={clickPageBtn}>
+          {v}
+        </Page>
       ))}
     </PageListStyle>
   );
