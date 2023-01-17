@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { HttpClient } from '../type';
+import { CommentType, HttpClient } from '../type';
 
 class AxiosClient implements HttpClient {
   _baseURL: string;
@@ -13,6 +13,17 @@ class AxiosClient implements HttpClient {
     try {
       const response = await this.instance.get(`comments`);
       return response.data;
+    } catch (e) {
+      const { name } = e as Error;
+      console.error(name || '정보를 불러오는데 실패했습니다.');
+    }
+  }
+
+  async post(param: CommentType) {
+    try {
+      console.log(param);
+      await this.instance.post(`comments`, param);
+      console.log('성공');
     } catch (e) {
       const { name } = e as Error;
       console.error(name || '정보를 불러오는데 실패했습니다.');

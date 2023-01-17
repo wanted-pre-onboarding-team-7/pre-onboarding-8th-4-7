@@ -1,21 +1,68 @@
 import styled from 'styled-components';
+import { CommentType } from '../type';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store';
+import { createComment } from '../store/commentSlice';
 
+const initialState = {
+  profile_url: '',
+  author: '',
+  content: '',
+  createdAt: '',
+};
 function Form() {
+  const dispatch = useDispatch<AppDispatch>();
+  const [commentForm, setCommentForm] = useState<CommentType>(initialState);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { value } = e.target;
+    setCommentForm({ ...commentForm, [e.target.name]: value });
+  };
+
+  const submitComment = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(createComment(commentForm));
+    setCommentForm(initialState);
+  };
   return (
     <FormStyle>
-      <form>
+      <form onSubmit={submitComment}>
         <input
           type="text"
           name="profile_url"
           placeholder="https://picsum.photos/id/1/50/50"
+          value={commentForm.profile_url}
+          onChange={handleChange}
           required
         />
         <br />
-        <input type="text" name="author" placeholder="작성자" />
+        <input
+          type="text"
+          name="author"
+          placeholder="작성자"
+          value={commentForm.author}
+          onChange={handleChange}
+        />
         <br />
-        <textarea name="content" placeholder="내용" required></textarea>
+        <textarea
+          name="content"
+          placeholder="내용"
+          value={commentForm.content}
+          onChange={handleChange}
+          required
+        ></textarea>
         <br />
-        <input type="text" name="createdAt" placeholder="2020-05-30" required />
+        <input
+          type="text"
+          name="createdAt"
+          placeholder="2020-05-30"
+          value={commentForm.createdAt}
+          onChange={handleChange}
+          required
+        />
         <br />
         <button type="submit">등록</button>
       </form>
@@ -40,6 +87,7 @@ const FormStyle = styled.div`
     width: 98%;
     margin-bottom: 10px;
   }
+
   & > form > button {
     padding: 0.375rem 0.75rem;
     border-radius: 0.25rem;

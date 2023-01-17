@@ -10,6 +10,7 @@ function CommentList() {
   useEffect(() => {
     dispatch(getComment());
   });
+
   return (
     <>
       {commentList.map((comment, key) => (
