@@ -3,7 +3,7 @@ import { CommentType } from '../type';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
-import { createComment, editComment } from '../store/commentSlice';
+import { createComment, editComment, getComment } from '../store/commentSlice';
 import { setCurrentPageNum, toggleEditMode } from '../store/editModeSlice';
 
 export const initialCommentState = {
@@ -30,19 +30,21 @@ function Form() {
     setCommentForm({ ...commentForm, [e.target.name]: value });
   };
 
-  const submitComment = (e: FormEvent<HTMLFormElement>) => {
+  const submitComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(createComment(commentForm));
+    await dispatch(createComment(commentForm));
     setCommentForm(initialCommentState);
     dispatch(setCurrentPageNum(1));
+    await dispatch(getComment());
   };
 
-  const submitEditComment = (e: FormEvent<HTMLFormElement>) => {
+  const submitEditComment = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     commentForm.id = targetComment.id;
-    dispatch(editComment(commentForm));
+    await dispatch(editComment(commentForm));
     setCommentForm(initialCommentState);
     dispatch(toggleEditMode(false));
+    await dispatch(getComment());
   };
 
   return (

@@ -21,11 +21,12 @@ function CommentList() {
 
   useEffect(() => {
     dispatch(getComment());
-  }, [commentList]);
+  }, []);
 
   const clickDeleteButton = (commentId: number) => {
     dispatch(deleteComment(commentId));
     dispatch(setCurrentPageNum(1));
+    dispatch(getComment());
   };
 
   const clickEditButton = (comment: CommentType) => {
