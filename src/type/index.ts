@@ -8,3 +8,7 @@ export interface IComment {
 export interface CommentsState {
   value: IComment[];
 }
+export interface IUpdateData {
+  commentId: number;
+  commentData: IComment;
+}

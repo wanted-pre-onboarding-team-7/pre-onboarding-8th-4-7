@@ -1,8 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { deleteComment, fetchComments } from '../slice/commentSlice';
+import {
+  deleteComment,
+  fetchComments,
+  updateCommentId,
+} from '../slice/commentSlice';
 import { IComment } from '../type';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { editMode } from '../slice/editModeSlice';
 
 function CommentList() {
   const commentList = useAppSelector<IComment[]>(
@@ -20,6 +25,10 @@ function CommentList() {
   const clickDelComment = async (id: number) => {
     await dispatch(deleteComment(id));
   };
+  const clickUpdateComment = (id: number) => {
+    dispatch(updateCommentId(id));
+    dispatch(editMode(id));
+  };
 
   return (
     <>
@@ -35,7 +44,9 @@ function CommentList() {
             <Content>{comment.content}</Content>
 
             <Button>
-              <button>수정</button>
+              <button onClick={() => clickUpdateComment(comment.id)}>
+                수정
+              </button>
               <button onClick={() => clickDelComment(comment.id)}>삭제</button>
             </Button>
 
