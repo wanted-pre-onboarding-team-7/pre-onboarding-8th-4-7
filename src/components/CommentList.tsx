@@ -2,7 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { AppDispatch, RootState } from '../store';
 import { deleteComment, getComment } from '../store/commentSlice';
-import { setTargetComment, toggleEditMode } from '../store/editModeSlice';
+import {
+  setCurrentPageNum,
+  setTargetComment,
+  toggleEditMode,
+} from '../store/editModeSlice';
 import { CommentType } from '../type';
 import { useEffect } from 'react';
 
@@ -17,9 +21,11 @@ function CommentList() {
 
   useEffect(() => {
     dispatch(getComment());
-  }, []);
+  }, [commentList]);
+
   const clickDeleteButton = (commentId: number) => {
     dispatch(deleteComment(commentId));
+    dispatch(setCurrentPageNum(1));
   };
 
   const clickEditButton = (comment: CommentType) => {

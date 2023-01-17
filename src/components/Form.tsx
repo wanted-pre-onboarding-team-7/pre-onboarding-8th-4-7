@@ -4,7 +4,7 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { createComment, editComment } from '../store/commentSlice';
-import { toggleEditMode } from '../store/editModeSlice';
+import { setCurrentPageNum, toggleEditMode } from '../store/editModeSlice';
 
 export const initialCommentState = {
   id: 0,
@@ -28,13 +28,13 @@ function Form() {
   ) => {
     const { value } = e.target;
     setCommentForm({ ...commentForm, [e.target.name]: value });
-    console.log(commentForm);
   };
 
   const submitComment = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(createComment(commentForm));
     setCommentForm(initialCommentState);
+    dispatch(setCurrentPageNum(1));
   };
 
   const submitEditComment = (e: FormEvent<HTMLFormElement>) => {
