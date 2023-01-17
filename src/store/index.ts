@@ -53,10 +53,10 @@ export const commentSlice = createSlice({
         state.currentPageIdx = 1;
       })
       .addCase(axiosPostComment.fulfilled, (state, action) => {
-        console.log(action.payload);
         const copyComments = state.comments;
         copyComments.push(action.payload);
         state.comments = copyComments;
+        state.currentPageIdx = 1;
       });
   },
 });
