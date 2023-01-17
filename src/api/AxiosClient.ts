@@ -11,7 +11,9 @@ class AxiosClient implements HttpClient {
 
   async get() {
     try {
-      const response = await this.instance.get(`comments`);
+      const response = await this.instance.get(
+        `comments?_order=desc&_sort=createdAt`,
+      );
       return response.data;
     } catch (e) {
       const { name } = e as Error;

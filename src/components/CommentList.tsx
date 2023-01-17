@@ -3,16 +3,21 @@ import styled from 'styled-components';
 import { AppDispatch, RootState } from '../store';
 import { deleteComment, getComment } from '../store/commentSlice';
 import { setTargetComment, toggleEditMode } from '../store/editModeSlice';
-import { MouseEventHandler } from 'react';
 import { CommentType } from '../type';
+import { useEffect } from 'react';
 
 function CommentList() {
   const dispatch = useDispatch<AppDispatch>();
   const commentList = useSelector((state: RootState) => state.comment);
+  const currentPageNum = useSelector(
+    (state: RootState) => state.editMode.currentPageNum,
+  );
+  const indexOfLast = currentPageNum * 4;
+  const indexOfFirst = indexOfLast - 4;
 
-  dispatch(getComment());
-  // console.log('dd'); 컴포넌트 무한렌더링..
-
+  useEffect(() => {
+    dispatch(getComment());
+  }, []);
   const clickDeleteButton = (commentId: number) => {
     dispatch(deleteComment(commentId));
   };
@@ -22,9 +27,11 @@ function CommentList() {
     dispatch(setTargetComment(comment));
   };
 
+  const slicedCommentList = commentList.slice(indexOfFirst, indexOfLast);
+
   return (
     <>
-      {commentList.map((comment, key) => (
+      {slicedCommentList.map((comment, key) => (
         <Comment key={key}>
           <img src={comment.profile_url} alt="" />
 

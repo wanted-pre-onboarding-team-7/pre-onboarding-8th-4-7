@@ -1,18 +1,39 @@
-import { Dispatch, SetStateAction } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { AppDispatch, RootState } from '../store';
+import { useState } from 'react';
+import { getComment } from '../store/commentSlice';
+import { setCurrentPageNum } from '../store/editModeSlice';
 
 function PageList() {
+  const POSTS_PER_PAGE = 4;
+  const dispatch = useDispatch<AppDispatch>();
+  const commentList = useSelector((state: RootState) => state.comment);
+  const NumPages = Math.ceil(commentList.length / POSTS_PER_PAGE);
+
   const pageArray = [];
 
-  pageArray.push(
-    // 임시로 페이지 하나만 설정했습니다.
-    <Page key="1">1</Page>,
-  );
+  for (let i = 1; i <= NumPages; i++) {
+    pageArray.push(i);
+  }
 
-  return <PageListStyle>{pageArray}</PageListStyle>;
+  const clickPageNum = (number: number) => {
+    dispatch(setCurrentPageNum(number));
+  };
+
+  return (
+    <PageListStyle>
+      {pageArray.map((number) => (
+        <Page key={number} onClick={() => clickPageNum(number)}>
+          {number}
+        </Page>
+      ))}
+    </PageListStyle>
+  );
 }
 
 export default PageList;
+
 const PageListStyle = styled.div`
   margin-bottom: 20px;
   text-align: center;

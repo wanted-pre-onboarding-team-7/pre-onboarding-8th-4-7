@@ -10,5 +10,5 @@ export interface CommentType {
 
 export interface HttpClient {
   instance: AxiosInstance;
-  get: () => Promise<AxiosResponse>;
+  get: (pageNumber: number) => Promise<AxiosResponse>;
 }

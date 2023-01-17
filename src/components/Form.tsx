@@ -22,11 +22,13 @@ function Form() {
   const [commentForm, setCommentForm] =
     useState<CommentType>(initialCommentState);
   //TODO: 수정버튼 눌렀을때 초기 value 변경
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
   ) => {
     const { value } = e.target;
     setCommentForm({ ...commentForm, [e.target.name]: value });
+    console.log(commentForm);
   };
 
   const submitComment = (e: FormEvent<HTMLFormElement>) => {
