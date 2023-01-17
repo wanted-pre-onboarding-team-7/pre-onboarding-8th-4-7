@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { CommentType } from '../type';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store';
 import { createComment, editComment, getComment } from '../store/commentSlice';
@@ -19,9 +19,13 @@ function Form() {
   const { isEdit, targetComment } = useSelector(
     (state: RootState) => state.editMode,
   );
+
   const [commentForm, setCommentForm] =
     useState<CommentType>(initialCommentState);
-  //TODO: 수정버튼 눌렀을때 초기 value 변경
+
+  useEffect(() => {
+    isEdit && setCommentForm(targetComment);
+  }, [isEdit]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
