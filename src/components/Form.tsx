@@ -25,7 +25,7 @@ function Form() {
 
   useEffect(() => {
     isEdit && setCommentForm(targetComment);
-  }, [isEdit]);
+  }, [targetComment]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
@@ -49,6 +49,11 @@ function Form() {
     setCommentForm(initialCommentState);
     dispatch(toggleEditMode(false));
     await dispatch(getComment());
+  };
+
+  const clickCancelButton = () => {
+    dispatch(toggleEditMode(false));
+    setCommentForm(initialCommentState);
   };
 
   return (
@@ -93,6 +98,11 @@ function Form() {
         />
         <br />
         <button type="submit">등록</button>
+        {isEdit && (
+          <button type="button" onClick={clickCancelButton}>
+            취소
+          </button>
+        )}
       </form>
     </FormStyle>
   );
@@ -118,6 +128,7 @@ const FormStyle = styled.div`
 
   & > form > button {
     padding: 0.375rem 0.75rem;
+    margin-right: 8px;
     border-radius: 0.25rem;
     border: 1px solid lightgray;
     cursor: pointer;
