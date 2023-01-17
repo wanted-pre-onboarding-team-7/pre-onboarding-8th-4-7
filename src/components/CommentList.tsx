@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCommentsInStore, axiosComments } from '../store/index';
 
 const Comment = styled.div`
   padding: 7px 10px;
@@ -35,35 +37,36 @@ const Button = styled.div`
   }
 `;
 
-// 임시 데이터 입니다. 코드 작성시 data 부분을 지워주세요
-const data = [
-  {
-    id: 1,
-    profile_url: 'https://picsum.photos/id/1/50/50',
-    author: 'abc_1',
-    content: 'UI 테스트는 어떻게 진행하나요',
-    createdAt: '2020-05-01',
-  },
-];
+type Tcomments = {
+  author: string;
+  content: string;
+  createdAt: string;
+  id: number;
+  profile_url: string;
+};
 
 function CommentList() {
+  const dispatch = useDispatch();
+  const comments = useSelector(getCommentsInStore);
+  useEffect(() => {
+    getComments();
+  }, []);
+
+  const getComments = async () => {
+    dispatch(axiosComments());
+  };
   return (
     <>
-      {data.map((comment, key) => (
-        <Comment key={key}>
+      {comments.map((comment: Tcomments) => (
+        <Comment key={comment.id}>
           <img src={comment.profile_url} alt="" />
-
           {comment.author}
-
           <CreatedAt>{comment.createdAt}</CreatedAt>
-
           <Content>{comment.content}</Content>
-
           <Button>
             <a>수정</a>
             <a>삭제</a>
           </Button>
-
           <hr />
         </Comment>
       ))}
