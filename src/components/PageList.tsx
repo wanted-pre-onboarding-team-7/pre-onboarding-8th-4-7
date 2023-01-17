@@ -32,7 +32,7 @@ function PageList() {
   const comments = useSelector(getCommentsInStore);
   const pagePerComments = useSelector(getpagePerCommentsInStore);
 
-  const pageArray = Array(Math.floor(comments.length / pagePerComments))
+  const pageArray = Array(Math.ceil(comments.length / pagePerComments))
     .fill(0)
     .map((_, idx) => idx + 1);
   const clickPageBtn = (e: any) => {
