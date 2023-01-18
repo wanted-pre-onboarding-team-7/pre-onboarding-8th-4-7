@@ -6,15 +6,15 @@ import {
   putComment,
 } from '../api/api';
 import { CommentsState, IComment, IUpdateData } from '../type';
-
+import { getComments } from '../api/api';
 const INIT_STATE: CommentsState = {
   value: [],
 };
 
 export const fetchCommentsThunk = createAsyncThunk(
   'comments/fetchComments', // 액션타입 생성
-  async (pageNum: number) => {
-    const commentsList = await getCommentsByPage(pageNum);
+  async () => {
+    const commentsList = await getComments();
     return commentsList;
   },
 );

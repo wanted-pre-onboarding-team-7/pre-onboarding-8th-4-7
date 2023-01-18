@@ -12,12 +12,11 @@ function CommentList() {
     useActions();
 
   useEffect(() => {
-    getComments(1);
+    getComments();
   }, []);
 
   const clickDelComment = async (id: number) => {
     deleteComment(id);
-    getComments(1);
     setCurrentPage(1);
   };
   const clickUpdateComment = (id: number) => {

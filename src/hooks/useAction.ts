@@ -14,8 +14,8 @@ const useActions = () => {
   const dispatch = useAppDispatch();
 
   const getComments = useCallback(
-    (pageNum: number) => {
-      dispatch(fetchCommentsThunk(pageNum));
+    () => {
+      dispatch(fetchCommentsThunk());
     },
     [dispatch],
   );

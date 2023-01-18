@@ -49,7 +49,6 @@ function Form() {
       dispatch(addMode());
     } else {
       createComment(newComment);
-      getComments(1);
       dispatch(updateActivePage(1));
     }
     clearInput();

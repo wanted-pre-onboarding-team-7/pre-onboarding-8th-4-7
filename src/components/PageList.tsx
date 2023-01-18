@@ -28,7 +28,7 @@ function PageList() {
     });
 
     setIsActive(newIsActive);
-    await dispatch(fetchCommentsThunk(pageId));
+    // await dispatch(fetchCommentsThunk(pageId));
     dispatch(updateActivePage(pageId));
   };
 
