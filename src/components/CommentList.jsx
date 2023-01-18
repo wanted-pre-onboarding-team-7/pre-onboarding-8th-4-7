@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { deleteComment, deleteCommentAPI, getComment } from '../store/comment';
@@ -40,40 +40,40 @@ const Button = styled.div`
 function CommentList() {
   const comments = useSelector((state) => state.comments.data);
   const dispatch = useDispatch();
-  const pageNumber =useSelector(state=>state.pagination)
-  useEffect(()=>{
-    setPagination(pageNumber)
-  },[pageNumber])
+  const pageNumber = useSelector((state) => state.pagination);
+  useEffect(() => {
+    setPagination(pageNumber);
+  }, [pageNumber]);
   const [pagination, setPagination] = useState(1);
   const deleteHandler = async (id) => {
-    dispatch(deleteCommentAPI(id))
-    dispatch(setPage(1))
-  }
+    dispatch(deleteCommentAPI(id));
+    dispatch(setPage(1));
+  };
   return (
     <>
       {comments ? (
-        comments.slice((pagination-1)*4, (pagination-1)*4 + 4).map((comment, key) => (
-          <Comment key={key}>
-            <img src={comment.profile_url} alt="" />
+        comments
+          .slice((pagination - 1) * 4, (pagination - 1) * 4 + 4)
+          .map((comment, key) => (
+            <Comment key={key}>
+              <img src={comment.profile_url} alt="" />
 
-            {comment.author}
+              {comment.author}
 
-            <CreatedAt>{comment.createdAt}</CreatedAt>
+              <CreatedAt>{comment.createdAt}</CreatedAt>
 
-            <Content>{comment.content}</Content>
+              <Content>{comment.content}</Content>
 
-            <Button>
-              <button onClick={() => dispatch(getComment(comment.id))}>
-                수정
-              </button>
-              <button onClick={() => deleteHandler(comment.id)}>
-                삭제
-              </button>
-            </Button>
+              <Button>
+                <button onClick={() => dispatch(getComment(comment.id))}>
+                  수정
+                </button>
+                <button onClick={() => deleteHandler(comment.id)}>삭제</button>
+              </Button>
 
-            <hr />
-          </Comment>
-        ))
+              <hr />
+            </Comment>
+          ))
       ) : (
         <div></div>
       )}

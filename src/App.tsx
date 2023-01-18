@@ -6,10 +6,10 @@ import PageListContainer from './containers/PageListContainer';
 import { initCommentAPI } from './store/comment';
 
 function App() {
-  const dispatch = useDispatch()
-  useEffect(()=>{
-    dispatch(initCommentAPI())
-  },[])
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(initCommentAPI());
+  }, []);
 
   return (
     <div>
