@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import commentSlice from '../slice/commentSlice';
 import EditModeSlice from '../slice/editModeSlice';
+import pageSlice from '../slice/pageSlice';
 
 export const store = configureStore({
   reducer: {
     comments: commentSlice,
     isEditMode: EditModeSlice,
+    pagination: pageSlice,
   },
   // TODO: middleware:
 });

@@ -1,23 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { addComment, updateComment } from '../slice/commentSlice';
+import {
+  addComment,
+  fetchComments,
+  updateComment,
+} from '../slice/commentSlice';
 import { addMode } from '../slice/editModeSlice';
+import { updateActivePage } from '../slice/pageSlice';
 import { IComment } from '../type';
-import { getLocalStorageComment } from '../util/localStorage-Fn';
-const INIT = {
-  id: 0,
-  profile_url: '',
-  author: '',
-  content: '',
-  createdAt: '',
-};
+import {
+  checkLocalStorage,
+  getLocalStorageComment,
+} from '../util/localStorage-Fn';
+
 function Form() {
   const isEditMode = useAppSelector(({ isEditMode }) => isEditMode.value);
   const [commentData, setCommentData] = useState<IComment>(INIT);
   useEffect(() => {
-    const editModeComment = getLocalStorageComment();
-    setCommentData(editModeComment);
+    if (checkLocalStorage()) {
+      const editModeComment = getLocalStorageComment();
+      setCommentData(JSON.parse(editModeComment || ''));
+    } else {
+      setCommentData(INIT);
+    }
   }, [isEditMode]);
 
   useEffect(() => {
@@ -49,6 +55,8 @@ function Form() {
     } else {
       await dispatch(addComment(newComment));
     }
+    dispatch(fetchComments(1));
+    dispatch(updateActivePage(1));
     clearInput();
   };
   const clearInput = () => {
@@ -128,3 +136,11 @@ const FormStyle = styled.div`
     cursor: pointer;
   }
 `;
+
+const INIT = {
+  id: 0,
+  profile_url: '',
+  author: '',
+  content: '',
+  createdAt: '',
+};

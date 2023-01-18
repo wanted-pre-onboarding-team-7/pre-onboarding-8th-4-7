@@ -8,6 +8,7 @@ import {
 import { IComment } from '../type';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { editMode } from '../slice/editModeSlice';
+import { updateActivePage } from '../slice/pageSlice';
 
 function CommentList() {
   const commentList = useAppSelector<IComment[]>(
@@ -15,7 +16,7 @@ function CommentList() {
   );
   const dispatch = useAppDispatch();
   const getComments = async () => {
-    await dispatch(fetchComments());
+    await dispatch(fetchComments(1));
   };
 
   useEffect(() => {
@@ -24,6 +25,8 @@ function CommentList() {
 
   const clickDelComment = async (id: number) => {
     await dispatch(deleteComment(id));
+    getComments();
+    dispatch(updateActivePage(1));
   };
   const clickUpdateComment = (id: number) => {
     dispatch(updateCommentId(id));
