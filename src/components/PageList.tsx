@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { AppDispatch, RootState } from '../store';
 import { setCurrentPageNum } from '../store/editModeSlice';
+import { POSTS_PER_PAGE } from '../util/constants';
 
 function PageList() {
-  const POSTS_PER_PAGE = 4;
   const dispatch = useDispatch<AppDispatch>();
   const commentList = useSelector((state: RootState) => state.comment);
   const NumPages = Math.ceil(commentList.length / POSTS_PER_PAGE);

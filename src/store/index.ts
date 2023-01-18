@@ -5,7 +5,6 @@ import logger from 'redux-logger';
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-  devTools: process.env.NODE_ENV !== 'production',
   reducer: {
     comment: commentSlice.reducer,
     editMode: editModeSlice.reducer,

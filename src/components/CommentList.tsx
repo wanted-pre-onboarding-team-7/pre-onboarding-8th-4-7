@@ -9,6 +9,7 @@ import {
 } from '../store/editModeSlice';
 import { CommentType } from '../type';
 import { useEffect } from 'react';
+import { POSTS_PER_PAGE } from '../util/constants';
 
 function CommentList() {
   const dispatch = useDispatch<AppDispatch>();
@@ -16,12 +17,8 @@ function CommentList() {
   const currentPageNum = useSelector(
     (state: RootState) => state.editMode.currentPageNum,
   );
-  const indexOfLast = currentPageNum * 4;
-  const indexOfFirst = indexOfLast - 4;
-
-  useEffect(() => {
-    dispatch(getComment());
-  }, []);
+  const indexOfLast = currentPageNum * POSTS_PER_PAGE;
+  const indexOfFirst = indexOfLast - POSTS_PER_PAGE;
 
   const clickDeleteButton = (commentId: number) => {
     dispatch(deleteComment(commentId));
@@ -36,6 +33,9 @@ function CommentList() {
 
   const slicedCommentList = commentList.slice(indexOfFirst, indexOfLast);
 
+  useEffect(() => {
+    dispatch(getComment());
+  }, []);
   return (
     <>
       {slicedCommentList.map((comment, key) => (

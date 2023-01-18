@@ -23,10 +23,6 @@ function Form() {
   const [commentForm, setCommentForm] =
     useState<CommentType>(initialCommentState);
 
-  useEffect(() => {
-    isEdit && setCommentForm(targetComment);
-  }, [targetComment]);
-
   const handleChange = (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -55,6 +51,10 @@ function Form() {
     dispatch(toggleEditMode(false));
     setCommentForm(initialCommentState);
   };
+
+  useEffect(() => {
+    isEdit && setCommentForm(targetComment);
+  }, [targetComment]);
 
   return (
     <FormStyle>
