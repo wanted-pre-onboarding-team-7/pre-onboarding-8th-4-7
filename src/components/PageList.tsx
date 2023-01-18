@@ -1,34 +1,41 @@
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { fetchComments } from '../slice/commentSlice';
-import { getTotalPage, updateActivePage } from '../slice/pageSlice';
+
+import { getTotalPage } from '../slice/pageSlice';
 
 function PageList() {
   const dispatch = useAppDispatch();
-  const totalPageState = useAppSelector(({ pagination }) => pagination.value);
-  const page = Array(totalPageState.totalPage).fill(0);
-  const currentPage = totalPageState.currentPage;
-  useEffect(() => {
-    getTotalState();
-  }, []);
-
-  const getTotalState = async () => {
+  const getTotalPageNum = async () => {
     await dispatch(getTotalPage());
   };
-  const clickPageLink = async (pageIdx: number) => {
-    await dispatch(fetchComments(pageIdx));
-    dispatch(updateActivePage(pageIdx));
+  useEffect(() => {
+    getTotalPageNum();
+  }, []);
+
+  const totalPageState = useAppSelector(({ pagination }) => pagination.value);
+  const page = Array(totalPageState.totalPage)
+    .fill(0)
+    .map((_, i) => i + 1);
+  const initialIsActive = Array(totalPageState.totalPage).fill(false);
+  const [isActive, setIsActive] = useState(initialIsActive);
+
+  const onClickPageNum = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const currPageNum = e.currentTarget.id;
+    const newIsActive = [...initialIsActive].map((_, i) => {
+      return Number(currPageNum) === Number(i + 1) ? true : false;
+    });
+
+    setIsActive(newIsActive);
+    // await dispatch(fetchComments(e.currentTarget.id));
+    // dispatch(updateActivePage(e.currentTarget.id));
   };
+
   return (
     <PageListStyle>
-      {page.map((ele, idx) => (
-        <Page
-          active={currentPage === idx + 1}
-          key={idx}
-          onClick={() => clickPageLink(idx + 1)}
-        >
-          {idx + 1}
+      {page.map((v) => (
+        <Page key={v} id={v} onClick={onClickPageNum} active={isActive[v - 1]}>
+          {v}
         </Page>
       ))}
     </PageListStyle>
@@ -45,13 +52,15 @@ const Page = styled.button<{ active: boolean }>`
   font-size: 1rem;
   line-height: 1.5;
   border: 1px solid lightgray;
-  ${({ active }) =>
+  ${(
+    { active }, //FIXME: 임시로 any 타입 설정함
+  ) =>
     active &&
     `
         background: gray;
         color: #fff;
   `}
   margin-right: 3px;
+  cursor: pointer;
 `;
-
 export default PageList;
