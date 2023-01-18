@@ -1,21 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
-// 임시 데이터 입니다. 코드 작성시 data 부분을 지워주세요
-const data = [
-  {
-    id: 1,
-    profile_url: 'https://picsum.photos/id/1/50/50',
-    author: 'abc_1',
-    content: 'UI 테스트는 어떻게 진행하나요',
-    createdAt: '2020-05-01',
-  },
-];
+import { getCommentsByPage } from '../store/commentReducer';
+import { DEFAULT_PAGE_NUM } from '../util/constants';
 
 function CommentList() {
+  const dispatch = useDispatch();
+  const { comments, loading } = useSelector((state) => state.fetchReducer);
+
+  useEffect(() => {
+    dispatch(getCommentsByPage(DEFAULT_PAGE_NUM));
+  }, []);
+
   return (
     <>
-      {data.map((comment, key) => (
+      {comments.map((comment, key) => (
         <Comment key={key}>
           <img src={comment.profile_url} alt="" />
 
