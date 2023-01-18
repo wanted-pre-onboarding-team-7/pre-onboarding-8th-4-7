@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getComments, getCommentsByPage } from '../api/api';
+import { getCommentsByPage } from '../api/api';
 import { IComment } from '../type';
 
 const INIT_STATE = {
