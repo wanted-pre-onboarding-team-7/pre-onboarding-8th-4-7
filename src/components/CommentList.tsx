@@ -1,23 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { IComment } from '../type';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import useActions from '../hooks/useAction';
+import { fetchCommentByPage } from '../slice/pageSlice';
 
 function CommentList() {
-  const commentList = useAppSelector<IComment[]>(
-    ({ comments }) => comments.value,
+  const dispatch = useAppDispatch();
+  const { commentsByPage } = useAppSelector(
+    ({ pagination }) => pagination.value,
   );
-  const { getComments, deleteComment, setCurrentPage, setEditMode } =
-    useActions();
+  const { getComments, deleteComment, setEditMode } = useActions();
+  const [commentList, setCommentList] = useState<any>();
 
   useEffect(() => {
     getComments();
+    dispatch(fetchCommentByPage(1));
   }, []);
+
+  useEffect(() => {
+    setCommentList(commentsByPage);
+  }, [commentsByPage]);
 
   const clickDelComment = async (id: number) => {
     deleteComment(id);
-    setCurrentPage(1);
+    dispatch(fetchCommentByPage(1));
   };
   const clickUpdateComment = (id: number) => {
     setEditMode(id);
@@ -25,8 +32,8 @@ function CommentList() {
   return (
     <>
       {commentList &&
-        commentList?.map((comment, key) => (
-          <Comment key={key}>
+        commentList?.map((comment: any, idx: number) => (
+          <Comment key={idx}>
             <img src={comment.profile_url} alt="" />
 
             {comment.author}
@@ -84,4 +91,3 @@ const Button = styled.div`
 `;
 
 export default CommentList;
-

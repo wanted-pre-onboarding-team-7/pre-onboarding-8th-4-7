@@ -2,18 +2,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { addMode } from '../slice/editModeSlice';
-import { updateActivePage } from '../slice/pageSlice';
 import { IComment } from '../type';
 import useAction from '../hooks/useAction';
+import { fetchCommentByPage } from '../slice/pageSlice';
 
 function Form() {
   const isEditMode = useAppSelector(({ isEditMode }) => isEditMode.value);
   const [commentData, setCommentData] = useState<IComment>(INIT);
-  const { getComments, createComment } = useAction();
+  const { createComment } = useAction();
   const { updateComment } = useAction();
   const commentList = useAppSelector<IComment[]>(
     ({ comments }) => comments.value,
   );
+  const { currentPage } = useAppSelector(({ pagination }) => pagination.value);
   useEffect(() => {
     if (isEditMode.mode) {
       const editComment =
@@ -37,7 +38,7 @@ function Form() {
   const clickAddComment = async (evt: React.MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
     const newComment: IComment = {
-      id: 0,
+      id: isEditMode.id,
       profile_url: String(profileRef.current?.value),
       author: String(authorRef.current?.value),
       content: String(contentRef.current?.value),
@@ -47,14 +48,14 @@ function Form() {
     if (isEditMode.mode) {
       updateComment({ commentId: isEditMode.id, commentData: newComment });
       dispatch(addMode());
+      dispatch(fetchCommentByPage(currentPage));
     } else {
       createComment(newComment);
-      dispatch(updateActivePage(1));
+      dispatch(fetchCommentByPage(1));
     }
     clearInput();
   };
   const clearInput = () => {
-    // profileRef.current?.value = '';
     if (profileRef.current) {
       profileRef.current.value = isEditMode.mode
         ? commentData?.profile_url
@@ -138,4 +139,3 @@ const INIT = {
   content: '',
   createdAt: '',
 };
-
