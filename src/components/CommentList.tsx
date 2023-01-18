@@ -11,7 +11,7 @@ function CommentList() {
     ({ pagination }) => pagination.value,
   );
   const { getComments, deleteComment, setEditMode } = useActions();
-  const [commentList, setCommentList] = useState<any>();
+  const [commentList, setCommentList] = useState<IComment[]>();
 
   useEffect(() => {
     getComments();
