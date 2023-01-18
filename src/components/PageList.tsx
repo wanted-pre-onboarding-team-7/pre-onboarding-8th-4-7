@@ -1,13 +1,33 @@
-import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store';
+import { axiosInstance } from '../util/axiosInstance';
 import styled from 'styled-components';
 
 function PageList() {
-  const pageArray = [];
-
-  pageArray.push(
-    // 임시로 페이지 하나만 설정했습니다.
-    <Page key="1">1</Page>,
+  const dispatch = useDispatch();
+  const { totalPage } = useSelector(
+    (state: RootState) => state.TotalPageReducer,
   );
+  console.log(totalPage);
+
+  const getPageComments = async (pageNumber: number) => {
+    const response = await axiosInstance.get(
+      `?_page=${pageNumber}&_limit=4&_order=desc&_sort=id`,
+    );
+    dispatch({
+      type: 'SET_COMMENTS',
+      comments: response.data,
+    });
+  };
+
+  const pageArray = [];
+  for (let i = 1; i <= totalPage; i++) {
+    pageArray.push(
+      <Page key={i} onClick={() => getPageComments(i)}>
+        {i}
+      </Page>,
+    );
+  }
 
   return <PageListStyle>{pageArray}</PageListStyle>;
 }
@@ -23,6 +43,7 @@ const Page = styled.button`
   font-size: 1rem;
   line-height: 1.5;
   border: 1px solid lightgray;
+  cursor: pointer;
   ${({ active }: any) =>
     active &&
     `

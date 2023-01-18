@@ -17,14 +17,6 @@ const PutReducer = (state = initialState, action: any) => {
         content: action.content,
         createdAt: action.createdAt,
       };
-    case 'CLICK':
-      return {
-        ...state,
-        UserName: action.UserName,
-        UserAccount: action.UserAccount,
-        UserIntro: action.UserIntro,
-        UserImage: action.UserImage,
-      };
 
     default:
       return state;
