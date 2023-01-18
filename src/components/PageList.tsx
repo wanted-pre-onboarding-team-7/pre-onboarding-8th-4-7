@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
+import { fetchCommentsThunk } from '../slice/commentSlice';
 
-import { getTotalPage } from '../slice/pageSlice';
+import { getTotalPage, updateActivePage } from '../slice/pageSlice';
 
 function PageList() {
   const dispatch = useAppDispatch();
@@ -20,21 +21,25 @@ function PageList() {
   const initialIsActive = Array(totalPageState.totalPage).fill(false);
   const [isActive, setIsActive] = useState(initialIsActive);
 
-  const onClickPageNum = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const currPageNum = e.currentTarget.id;
+  const onClickPageNum = async (pageId: number) => {
+    const currPageNum = pageId;
     const newIsActive = [...initialIsActive].map((_, i) => {
       return Number(currPageNum) === Number(i + 1) ? true : false;
     });
 
     setIsActive(newIsActive);
-    // await dispatch(fetchComments(e.currentTarget.id));
-    // dispatch(updateActivePage(e.currentTarget.id));
+    await dispatch(fetchCommentsThunk(pageId));
+    dispatch(updateActivePage(pageId));
   };
 
   return (
     <PageListStyle>
       {page.map((v) => (
-        <Page key={v} id={v} onClick={onClickPageNum} active={isActive[v - 1]}>
+        <Page
+          key={v}
+          onClick={() => onClickPageNum(v)}
+          active={totalPageState.currentPage === v}
+        >
           {v}
         </Page>
       ))}
