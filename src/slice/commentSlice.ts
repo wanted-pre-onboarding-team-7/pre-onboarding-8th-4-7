@@ -1,5 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { delComment, getComments, postComment, putComment } from '../api/api';
+import {
+  delComment,
+  getCommentsByPage,
+  postComment,
+  putComment,
+} from '../api/api';
 import { CommentsState, IComment, IUpdateData } from '../type';
 import { saveLocalStorageComment } from '../util/localStorage-Fn';
 
@@ -7,10 +12,13 @@ const INIT_STATE: CommentsState = {
   value: [],
 };
 
-export const fetchComments = createAsyncThunk('comments/fetchComments', () => {
-  const commentsList = getComments();
-  return commentsList;
-});
+export const fetchComments = createAsyncThunk(
+  'comments/fetchComments',
+  (pageNum: number) => {
+    const commentsList = getCommentsByPage(pageNum);
+    return commentsList;
+  },
+);
 
 export const addComment = createAsyncThunk(
   'comments/addComment',
