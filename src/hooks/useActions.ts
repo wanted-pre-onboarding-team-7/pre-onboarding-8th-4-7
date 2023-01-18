@@ -1,32 +1,57 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  commentCreate,
-  commentDelete,
-  commentUpdate,
-} from '../reducers/CommentReducer';
+import { setPage, editMode, fetchApi } from '../reducers/CommentReducer';
 import { CommentsType } from '../type/CommentType';
-import axios from 'axios';
 
 const useActions = () => {
   const dispatch = useDispatch();
 
-  const createComment = useCallback((newComment: CommentsType) => {
-    dispatch(commentCreate({ ...newComment }));
-    axios.post(`/comments`, newComment);
-  }, []);
+  const getComments = useCallback(
+    (page: number, limit: number) => {
+      dispatch(fetchApi({ requestType: 'comment/get', args: { page, limit } }));
+    },
+    [dispatch],
+  );
 
-  const deleteComment = useCallback((id: number) => {
-    dispatch(commentDelete({ id }));
-    axios.delete(`/comments/${id}`);
-  }, []);
+  const createComment = useCallback(
+    (newComment: CommentsType) => {
+      dispatch(fetchApi({ requestType: 'comment/post', body: newComment }));
+    },
+    [dispatch],
+  );
 
-  const updateComment = useCallback((updateComment: CommentsType) => {
-    dispatch(commentUpdate({ ...updateComment }));
-    axios.put(`/comments/${updateComment.id}`, updateComment);
-  }, []);
+  const deleteComment = useCallback(
+    (id: number) => {
+      dispatch(fetchApi({ requestType: 'comment/delete', body: { id } }));
+    },
+    [dispatch],
+  );
 
-  return { createComment, deleteComment, updateComment };
+  const updateComment = useCallback(
+    (updateComment: CommentsType) => {
+      dispatch(fetchApi({ requestType: 'comment/put', body: updateComment }));
+    },
+    [dispatch],
+  );
+
+  const setCurrentPage = useCallback(
+    (currentPage: number) => dispatch(setPage(currentPage)),
+    [dispatch],
+  );
+
+  const setEditMode = useCallback(
+    (currentComId: number) => dispatch(editMode(currentComId)),
+    [],
+  );
+
+  return {
+    getComments,
+    createComment,
+    deleteComment,
+    updateComment,
+    setCurrentPage,
+    setEditMode,
+  };
 };
 
 export default useActions;

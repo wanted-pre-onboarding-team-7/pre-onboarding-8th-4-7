@@ -1,20 +1,29 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { CommentsType } from '../type/CommentType';
+import useActions from '../hooks/useActions';
+import { RootState } from '../store/CommentStore';
 
 function CommentList() {
-  const [data, setData] = useState<CommentsType[]>([]);
+  const { comments, currentPage, limit } = useSelector(
+    (state: RootState) => state,
+  );
+  const { getComments, deleteComment, setCurrentPage, setEditMode } =
+    useActions();
+
+  const handleDeleteComment = (id: number) => {
+    deleteComment(id);
+    getComments(1, limit);
+    setCurrentPage(1);
+  };
 
   useEffect(() => {
-    axios
-      .get('http://localhost:4000/comments')
-      .then((res) => setData(res.data));
-  }, []);
+    getComments(currentPage, limit);
+  }, [currentPage, limit]);
 
   return (
     <>
-      {data.map((comment, key) => (
+      {comments.map((comment, key) => (
         <Comment key={key}>
           <img src={comment.profile_url} alt="" />
 
@@ -25,8 +34,10 @@ function CommentList() {
           <Content>{comment.content}</Content>
 
           <Button>
-            <a href="/">수정</a>
-            <a href="/">삭제</a>
+            <button onClick={() => setEditMode(comment.id!)}>수정</button>
+            <button onClick={() => handleDeleteComment(comment.id!)}>
+              삭제
+            </button>
           </Button>
 
           <hr />
@@ -63,11 +74,16 @@ const Content = styled.div`
 const Button = styled.div`
   text-align: right;
   margin: 10px 0;
-  & > a {
+  & > button {
     margin-right: 10px;
     padding: 0.375rem 0.75rem;
     border-radius: 0.25rem;
     border: 1px solid lightgray;
+    background-color: transparent;
     cursor: pointer;
+
+    &:hover {
+      background-color: rgba(128, 128, 128, 0.4);
+    }
   }
 `;

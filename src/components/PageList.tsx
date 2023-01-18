@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/CommentStore';
+import useActions from '../hooks/useActions';
 
 function PageList() {
-  const pageArray = [];
+  const [totalPage, setTotalPage] = useState(0);
+  const { currentPage, limit } = useSelector((state: RootState) => state);
+  const { setCurrentPage } = useActions();
+  const pageArray = Array(totalPage)
+    .fill(1)
+    .map((e, i) => (
+      <Page
+        active={currentPage === i + 1}
+        key={i + 1}
+        onClick={() => setCurrentPage(i + 1)}
+      >
+        {i + 1}
+      </Page>
+    ));
 
-  pageArray.push(
-    // 임시로 페이지 하나만 설정했습니다.
-    <Page active key="1">1</Page>,
-    <Page key="2">2</Page>,
-    <Page key="3">3</Page>,
-    <Page key="4">4</Page>,
-  );
+  useEffect(() => {
+    axios.get('http://localhost:4000/comments').then((res) => {
+      setTotalPage(Math.ceil(res.data.length / limit));
+    });
+  }, [currentPage, limit]);
 
   return <PageListStyle>{pageArray}</PageListStyle>;
 }
@@ -23,7 +37,7 @@ const PageListStyle = styled.div`
   text-align: center;
 `;
 
-const Page = styled.button<{active?: boolean}>`
+const Page = styled.button<{ active?: boolean }>`
   padding: 0.375rem 0.75rem;
   border-radius: 0.25rem;
   font-size: 1rem;
