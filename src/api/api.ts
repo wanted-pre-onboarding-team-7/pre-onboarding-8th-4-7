@@ -6,7 +6,8 @@ export const getComments = () => {
 };
 
 export const getCommentsByPage = (pageNum: number) => {
-  return axiosClient.get(`?_page=${pageNum}&_limit=4&_order=desc&_sort=id`);
+  return axiosClient.get(`?_page=${pageNum}&_limit=4&_order=desc&_sort=createdAt
+  `);
 };
 export const postComment = (comment: IComment) => {
   return axiosClient.post('/', comment);

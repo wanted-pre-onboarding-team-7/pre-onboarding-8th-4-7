@@ -1,38 +1,28 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import {
-  deleteComment,
-  fetchComments,
-  updateCommentId,
-} from '../slice/commentSlice';
 import { IComment } from '../type';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { editMode } from '../slice/editModeSlice';
-import { updateActivePage } from '../slice/pageSlice';
+import { useAppSelector } from '../hooks';
+import useActions from '../hooks/useAction';
 
 function CommentList() {
   const commentList = useAppSelector<IComment[]>(
     ({ comments }) => comments.value,
   );
-  const dispatch = useAppDispatch();
-  const getComments = async () => {
-    await dispatch(fetchComments(1));
-  };
+  const { getComments, deleteComment, setCurrentPage, setEditMode } =
+    useActions();
 
   useEffect(() => {
-    getComments();
+    getComments(1);
   }, []);
 
   const clickDelComment = async (id: number) => {
-    await dispatch(deleteComment(id));
-    getComments();
-    dispatch(updateActivePage(1));
+    deleteComment(id);
+    getComments(1);
+    setCurrentPage(1);
   };
   const clickUpdateComment = (id: number) => {
-    dispatch(updateCommentId(id));
-    dispatch(editMode(id));
+    setEditMode(id);
   };
-
   return (
     <>
       {commentList &&
@@ -95,3 +85,4 @@ const Button = styled.div`
 `;
 
 export default CommentList;
+

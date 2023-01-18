@@ -6,38 +6,37 @@ import {
   putComment,
 } from '../api/api';
 import { CommentsState, IComment, IUpdateData } from '../type';
-import { saveLocalStorageComment } from '../util/localStorage-Fn';
 
 const INIT_STATE: CommentsState = {
   value: [],
 };
 
-export const fetchComments = createAsyncThunk(
-  'comments/fetchComments',
-  (pageNum: number) => {
-    const commentsList = getCommentsByPage(pageNum);
+export const fetchCommentsThunk = createAsyncThunk(
+  'comments/fetchComments', // 액션타입 생성
+  async (pageNum: number) => {
+    const commentsList = await getCommentsByPage(pageNum);
     return commentsList;
   },
 );
 
-export const addComment = createAsyncThunk(
+export const addCommentThunk = createAsyncThunk(
   'comments/addComment',
-  (commentData: IComment) => {
-    return postComment(commentData);
+  async (commentData: IComment) => {
+    return await postComment(commentData);
   },
 );
-export const deleteComment = createAsyncThunk(
+export const deleteCommentThunk = createAsyncThunk(
   'comment/deleteComment',
-  (commentId: number) => {
-    delComment(commentId);
+  async (commentId: number) => {
+    await delComment(commentId);
     return commentId;
   },
 );
 
-export const updateComment = createAsyncThunk(
+export const updateCommentThunk = createAsyncThunk(
   'comment/updateComment',
-  (updateData: IUpdateData) => {
-    putComment(updateData.commentId, updateData.commentData);
+  async (updateData: IUpdateData) => {
+    await putComment(updateData.commentId, updateData.commentData);
     return updateData;
   },
 );
@@ -45,24 +44,19 @@ export const updateComment = createAsyncThunk(
 export const commentSlice = createSlice({
   name: 'comments',
   initialState: INIT_STATE,
-  reducers: {
-    updateCommentId: (state, { payload }) => {
-      const tmp = state.value.filter((ele) => ele.id === payload);
-      saveLocalStorageComment(tmp[0]);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchComments.fulfilled, (state, { payload }: any) => {
+      .addCase(fetchCommentsThunk.fulfilled, (state, { payload }: any) => {
         state.value = [...payload];
       })
-      .addCase(addComment.fulfilled, (state, { payload }: any) => {
+      .addCase(addCommentThunk.fulfilled, (state, { payload }: any) => {
         state.value = [...state.value, payload];
       })
-      .addCase(deleteComment.fulfilled, (state, { payload }: any) => {
+      .addCase(deleteCommentThunk.fulfilled, (state, { payload }: any) => {
         state.value = state.value.filter((ele) => ele.id !== payload);
       })
-      .addCase(updateComment.fulfilled, (state, { payload }: any) => {
+      .addCase(updateCommentThunk.fulfilled, (state, { payload }: any) => {
         state.value = state.value.map((ele) => {
           if (ele.id === payload.commentId) {
             return { ...payload.commentData };
@@ -72,5 +66,5 @@ export const commentSlice = createSlice({
       });
   },
 });
-export const { updateCommentId } = commentSlice.actions;
+
 export default commentSlice.reducer;

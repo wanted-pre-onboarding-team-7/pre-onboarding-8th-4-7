@@ -1,26 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import {
-  addComment,
-  fetchComments,
-  updateComment,
-} from '../slice/commentSlice';
 import { addMode } from '../slice/editModeSlice';
 import { updateActivePage } from '../slice/pageSlice';
 import { IComment } from '../type';
-import {
-  checkLocalStorage,
-  getLocalStorageComment,
-} from '../util/localStorage-Fn';
+import useAction from '../hooks/useAction';
 
 function Form() {
   const isEditMode = useAppSelector(({ isEditMode }) => isEditMode.value);
   const [commentData, setCommentData] = useState<IComment>(INIT);
+  const { getComments, createComment } = useAction();
+  const { updateComment } = useAction();
+  const commentList = useAppSelector<IComment[]>(
+    ({ comments }) => comments.value,
+  );
   useEffect(() => {
-    if (checkLocalStorage()) {
-      const editModeComment = getLocalStorageComment();
-      setCommentData(JSON.parse(editModeComment || ''));
+    if (isEditMode.mode) {
+      const editComment =
+        commentList.find((e) => e.id === isEditMode.id) || INIT;
+      setCommentData(editComment);
     } else {
       setCommentData(INIT);
     }
@@ -29,8 +27,6 @@ function Form() {
   useEffect(() => {
     clearInput();
   }, [commentData]);
-
-  // console.log(isEditMode.mode);
 
   const dispatch = useAppDispatch();
   const profileRef = useRef<HTMLInputElement>(null);
@@ -47,16 +43,15 @@ function Form() {
       content: String(contentRef.current?.value),
       createdAt: String(dateRef.current?.value),
     };
+
     if (isEditMode.mode) {
-      await dispatch(
-        updateComment({ commentId: isEditMode.id, commentData: newComment }),
-      );
+      updateComment({ commentId: isEditMode.id, commentData: newComment });
       dispatch(addMode());
     } else {
-      await dispatch(addComment(newComment));
+      createComment(newComment);
+      getComments(1);
+      dispatch(updateActivePage(1));
     }
-    dispatch(fetchComments(1));
-    dispatch(updateActivePage(1));
     clearInput();
   };
   const clearInput = () => {
@@ -144,3 +139,4 @@ const INIT = {
   content: '',
   createdAt: '',
 };
+
