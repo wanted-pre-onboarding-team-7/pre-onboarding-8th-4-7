@@ -6,19 +6,16 @@ import {
   deleteCommentThunk,
   updateCommentThunk,
 } from '../slice/commentSlice';
-import { updateActivePage } from '../slice/pageSlice';
+// import { updateActivePage } from '../slice/pageSlice';
 import { editMode } from '../slice/editModeSlice';
 import { useAppDispatch } from './useAppDispatch';
 
 const useActions = () => {
   const dispatch = useAppDispatch();
 
-  const getComments = useCallback(
-    (pageNum: number) => {
-      dispatch(fetchCommentsThunk(pageNum));
-    },
-    [dispatch],
-  );
+  const getComments = useCallback(() => {
+    dispatch(fetchCommentsThunk());
+  }, [dispatch]);
 
   const createComment = useCallback(
     (newComment: IComment) => {
@@ -41,10 +38,10 @@ const useActions = () => {
     [dispatch],
   );
 
-  const setCurrentPage = useCallback(
-    (currentPage: number) => dispatch(updateActivePage(currentPage)),
-    [dispatch],
-  );
+  // const setCurrentPage = useCallback(
+  //   (currentPage: number) => dispatch(updateActivePage(currentPage)),
+  //   [dispatch],
+  // );
 
   const setEditMode = useCallback(
     (currentComId: number) => dispatch(editMode(currentComId)),
@@ -56,7 +53,7 @@ const useActions = () => {
     createComment,
     deleteComment,
     updateComment,
-    setCurrentPage,
+    // setCurrentPage,
     setEditMode,
   };
 };
