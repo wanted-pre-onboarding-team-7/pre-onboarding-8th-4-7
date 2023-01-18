@@ -6,7 +6,6 @@ import { RootState } from '../store';
 import CommentItem from './CommentItem';
 
 function CommentList() {
-  //   const [comments, setComments] = useState([]);
   const { comments } = useSelector((state: RootState) => state.PageDataReducer);
 
   const dispatch = useDispatch();
@@ -15,8 +14,6 @@ function CommentList() {
   const getComments = async () => {
     try {
       const response = await axiosInstance.get('');
-      console.log(response);
-      //   setComments(response.data);
       dispatch({
         type: 'TOTAL_PAGE',
         totalPage: Math.ceil(response.data.length / 4),
@@ -35,9 +32,9 @@ function CommentList() {
 
   return (
     <>
-      {comments?.map((comments: Icomment) => {
-        return <CommentItem key={comments.id} comments={comments} />;
-      })}
+      {/* {comments?.map((comments: Icomment) => { */}
+      {/* return <CommentItem key={comments.id} comments={comments} />; */}
+      {/* })} */}
     </>
   );
 }

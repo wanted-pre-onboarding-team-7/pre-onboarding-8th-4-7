@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { axiosInstance } from '../util/axiosInstance';
+// import { getPageComments } from '../api/index';
 import styled from 'styled-components';
 
 function Form() {
@@ -24,6 +25,10 @@ function Form() {
     }
   };
 
+  const { currentPage } = useSelector(
+    (state: RootState) => state.PageNumReducer,
+  );
+
   const putComment = async () => {
     try {
       window.confirm('수정하시겠습니까?');
@@ -33,6 +38,7 @@ function Form() {
         content: contentRef.current?.value,
         createdAt: dateRef.current?.value,
       });
+      //   if (response.status === 200) getPageComments(currentPage);
       console.log(response.data);
     } catch (err) {
       console.error(err);
