@@ -8,6 +8,9 @@ function CommentList() {
   const { commentsByPage } = useAppSelector(
     ({ pagination }) => pagination.value,
   );
+  const commentListRedux = useAppSelector<IComment[]>(
+    ({ comments }) => comments.value,
+  );
   const { getComments, deleteComment, setEditMode, loadFirstPage } =
     useActions();
   const [commentList, setCommentList] = useState<IComment[]>();
@@ -19,7 +22,7 @@ function CommentList() {
 
   useEffect(() => {
     setCommentList(commentsByPage);
-  }, [commentsByPage]);
+  }, [commentsByPage, commentListRedux]);
 
   const clickDelComment = async (id: number) => {
     deleteComment(id);

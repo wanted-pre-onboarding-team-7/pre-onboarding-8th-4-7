@@ -10,6 +10,9 @@ import { fetchCommentByPage } from '../slice/pageSlice';
 function Form() {
   const isEditMode = useAppSelector(({ isEditMode }) => isEditMode.value);
   const { currentPage } = useAppSelector(({ pagination }) => pagination.value);
+  const { commentsByPage } = useAppSelector(
+    ({ pagination }) => pagination.value,
+  );
   const commentList = useAppSelector<IComment[]>(
     ({ comments }) => comments.value,
   );
@@ -21,12 +24,11 @@ function Form() {
   const { createComment, updateComment, loadFirstPage } = useAction();
   const dispatch = useAppDispatch();
 
-  // console.log('commentList', commentList);
-  // console.log('isEditMode', isEditMode);
   useEffect(() => {
     if (isEditMode.mode) {
       const editComment: IComment =
-        commentList.find((e) => e.id === isEditMode.id) || ({} as IComment);
+        commentList.find((e) => Number(e.id) === Number(isEditMode.id)) ||
+        ({} as IComment);
       setCommentData(new EditForm(editComment));
     }
   }, [isEditMode]);
@@ -55,7 +57,10 @@ function Form() {
     const newComment = commentData.getCommentObject();
 
     if (isEditMode.mode) {
-      updateComment({ commentId: isEditMode.id, commentData: newComment });
+      updateComment({
+        commentId: isEditMode.id,
+        commentData: newComment,
+      });
       dispatch(cancelEditMode());
       dispatch(fetchCommentByPage(currentPage));
     } else {
