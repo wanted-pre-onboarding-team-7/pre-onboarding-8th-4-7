@@ -45,6 +45,7 @@
 git clone
 cd pre-onboarding-8th-4-7
 npm install
+npm run api
 npm start
 ```
 
