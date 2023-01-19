@@ -6,10 +6,6 @@ import { fetchCommentByPage } from '../slice/pageSlice';
 function PageList() {
   const dispatch = useAppDispatch();
   const { currentPage } = useAppSelector(({ pagination }) => pagination.value);
-  const [_, setPage] = useState<number>();
-  useEffect(() => {
-    setPage(currentPage);
-  }, [currentPage]);
   const commentsList = useAppSelector(({ comments }) => comments.value);
 
   const onClickPageNum = (pageNum: number) => {
@@ -43,9 +39,7 @@ const Page = styled.button<{ active: boolean }>`
   font-size: 1rem;
   line-height: 1.5;
   border: 1px solid lightgray;
-  ${(
-    { active }, //FIXME: 임시로 any 타입 설정함
-  ) =>
+  ${({ active }) =>
     active &&
     `
         background: gray;
