@@ -1,34 +1,31 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getComments } from '../api/api';
+import { getCommentsByPage } from '../api/api';
+import { IComment } from '../type';
 
 const INIT_STATE = {
   value: {
-    totalPage: 0,
+    commentsByPage: [] as IComment[],
     currentPage: 1,
   },
 };
 
-export const getTotalPage = createAsyncThunk(
-  'page/fetchAllComments',
-  async () => {
-    const commentsList = await getComments();
-    return commentsList;
+export const fetchCommentByPage = createAsyncThunk(
+  'page/fetchCommentByPage',
+  async (pageNum: number) => {
+    const commentsList: any = await getCommentsByPage(pageNum);
+    return { commentsList, pageNum };
   },
 );
 
 export const pageSlice = createSlice({
   name: 'page',
   initialState: INIT_STATE,
-  reducers: {
-    updateActivePage: (state, { payload }) => {
-      state.value.currentPage = payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getTotalPage.fulfilled, (state, { payload }: any) => {
-      state.value.totalPage = Math.ceil(payload.length / 4);
+    builder.addCase(fetchCommentByPage.fulfilled, (state, { payload }: any) => {
+      state.value.commentsByPage = [...payload.commentsList];
+      state.value.currentPage = payload.pageNum;
     });
   },
 });
-export const { updateActivePage } = pageSlice.actions;
 export default pageSlice.reducer;
