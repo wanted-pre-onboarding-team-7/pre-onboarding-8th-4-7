@@ -1,30 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styled from 'styled-components';
 import { IComment } from '../type';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppSelector } from '../hooks';
 import useActions from '../hooks/useAction';
-import { fetchCommentByPage } from '../slice/pageSlice';
 
 function CommentList() {
-  const dispatch = useAppDispatch();
-  const { commentsByPage } = useAppSelector(
-    ({ pagination }) => pagination.value,
+  const commentList = useAppSelector<IComment[]>(
+    ({ comments }) => comments.value,
   );
-  const { getComments, deleteComment, setEditMode } = useActions();
-  const [commentList, setCommentList] = useState<IComment[]>();
+  const { loadFirstPage, deleteComment, setEditMode } = useActions();
 
   useEffect(() => {
-    getComments();
-    dispatch(fetchCommentByPage(1));
+    loadFirstPage();
   }, []);
-
-  useEffect(() => {
-    setCommentList(commentsByPage);
-  }, [commentsByPage]);
 
   const clickDelComment = async (id: number) => {
     deleteComment(id);
-    dispatch(fetchCommentByPage(1));
+    loadFirstPage();
   };
   const clickUpdateComment = (id: number) => {
     setEditMode(id);
@@ -32,8 +24,8 @@ function CommentList() {
   return (
     <>
       {commentList &&
-        commentList?.map((comment: any, idx: number) => (
-          <Comment key={idx}>
+        commentList?.map((comment, key) => (
+          <Comment key={key}>
             <img src={comment.profile_url} alt="" />
 
             {comment.author}
@@ -43,10 +35,10 @@ function CommentList() {
             <Content>{comment.content}</Content>
 
             <Button>
-              <button onClick={() => clickUpdateComment(comment.id)}>
+              <button onClick={() => clickUpdateComment(comment.id!)}>
                 수정
               </button>
-              <button onClick={() => clickDelComment(comment.id)}>삭제</button>
+              <button onClick={() => clickDelComment(comment.id!)}>삭제</button>
             </Button>
 
             <hr />

@@ -1,80 +1,70 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { addMode } from '../slice/editModeSlice';
+import { addMode as cancelEditMode } from '../slice/editModeSlice';
+import { updateActivePage } from '../slice/pageSlice';
 import { IComment } from '../type';
 import useAction from '../hooks/useAction';
-import { fetchCommentByPage } from '../slice/pageSlice';
+import { EditForm, IForm, NewEmptyForm } from '../class/FormState';
 
 function Form() {
   const isEditMode = useAppSelector(({ isEditMode }) => isEditMode.value);
-  const [commentData, setCommentData] = useState<IComment>(INIT);
-  const { createComment } = useAction();
-  const { updateComment } = useAction();
+  const [commentData, setCommentData] = useState<IForm>(new NewEmptyForm());
+  const profileRef = useRef<HTMLInputElement>({} as HTMLInputElement);
+  const authorRef = useRef<HTMLInputElement>({} as HTMLInputElement);
+  const contentRef = useRef<HTMLTextAreaElement>({} as HTMLTextAreaElement);
+  const createdAtRef = useRef<HTMLInputElement>({} as HTMLInputElement);
+  const { createComment, updateComment, loadFirstPage } = useAction();
   const commentList = useAppSelector<IComment[]>(
     ({ comments }) => comments.value,
   );
-  const { currentPage } = useAppSelector(({ pagination }) => pagination.value);
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
     if (isEditMode.mode) {
-      const editComment =
-        commentList.find((e) => e.id === isEditMode.id) || INIT;
-      setCommentData(editComment);
-    } else {
-      setCommentData(INIT);
+      const editComment: IComment =
+        commentList.find((e) => e.id === isEditMode.id) || ({} as IComment);
+      setCommentData(new EditForm(editComment));
     }
   }, [isEditMode]);
 
   useEffect(() => {
-    clearInput();
+    loadRefs();
   }, [commentData]);
 
-  const dispatch = useAppDispatch();
-  const profileRef = useRef<HTMLInputElement>(null);
-  const authorRef = useRef<HTMLInputElement>(null);
-  const contentRef = useRef<HTMLTextAreaElement>(null);
-  const dateRef = useRef<HTMLInputElement>(null);
+  const loadRefs = () => {
+    profileRef.current.value = commentData.profile_url;
+    authorRef.current.value = commentData.author;
+    contentRef.current.value = commentData.content;
+    createdAtRef.current.value = commentData.createdAt;
+  };
 
-  const clickAddComment = async (evt: React.MouseEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
-    const newComment: IComment = {
-      id: isEditMode.id,
-      profile_url: String(profileRef.current?.value),
-      author: String(authorRef.current?.value),
-      content: String(contentRef.current?.value),
-      createdAt: String(dateRef.current?.value),
-    };
+  const saveRefToComment = () => {
+    commentData.profile_url = profileRef.current.value;
+    commentData.author = authorRef.current.value;
+    commentData.content = contentRef.current.value;
+    commentData.createdAt = createdAtRef.current.value;
+  };
+
+  const onSubmitComment = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    saveRefToComment();
+    const newComment = commentData.getCommentObject();
 
     if (isEditMode.mode) {
       updateComment({ commentId: isEditMode.id, commentData: newComment });
-      dispatch(addMode());
-      dispatch(fetchCommentByPage(currentPage));
+      dispatch(cancelEditMode());
     } else {
       createComment(newComment);
-      dispatch(fetchCommentByPage(1));
+      loadFirstPage();
     }
-    clearInput();
-  };
-  const clearInput = () => {
-    if (profileRef.current) {
-      profileRef.current.value = isEditMode.mode
-        ? commentData?.profile_url
-        : '';
-    }
-    if (authorRef.current) {
-      authorRef.current.value = isEditMode.mode ? commentData?.author : '';
-    }
-    if (contentRef.current) {
-      contentRef.current.value = isEditMode.mode ? commentData?.content : '';
-    }
-    if (dateRef.current) {
-      dateRef.current.value = isEditMode.mode ? commentData?.createdAt : '';
-    }
+
+    setCommentData(new NewEmptyForm());
   };
 
   return (
     <FormStyle>
-      <form>
+      <form onSubmit={onSubmitComment}>
         <input
           type="text"
           name="profile_url"
@@ -96,13 +86,11 @@ function Form() {
           type="text"
           name="createdAt"
           placeholder="2020-05-30"
-          ref={dateRef}
+          ref={createdAtRef}
           required
         />
         <br />
-        <button type="submit" onClick={clickAddComment}>
-          등록
-        </button>
+        <button type="submit">등록</button>
       </form>
     </FormStyle>
   );
@@ -131,11 +119,3 @@ const FormStyle = styled.div`
     cursor: pointer;
   }
 `;
-
-const INIT = {
-  id: 0,
-  profile_url: '',
-  author: '',
-  content: '',
-  createdAt: '',
-};

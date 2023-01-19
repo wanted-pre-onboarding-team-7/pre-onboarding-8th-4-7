@@ -42,7 +42,13 @@ const useActions = () => {
     [],
   );
 
+  const loadFirstPage = useCallback(() => {
+    getComments(1);
+    setCurrentPage(1);
+  }, [getComments, setCurrentPage]);
+
   return {
+    loadFirstPage,
     getComments,
     createComment,
     deleteComment,
