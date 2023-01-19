@@ -26,7 +26,6 @@ function CommentList() {
 
   const clickDelComment = async (id: number) => {
     deleteComment(id);
-    loadFirstPage();
   };
   const clickUpdateComment = (id: number) => {
     setEditMode(id);

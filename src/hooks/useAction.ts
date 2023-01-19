@@ -6,9 +6,8 @@ import {
   deleteCommentThunk,
   updateCommentThunk,
 } from '../slice/commentSlice';
-import { editMode } from '../slice/editModeSlice';
+import { cancelEditMode, editMode } from '../slice/editModeSlice';
 import { useAppDispatch } from './useAppDispatch';
-import { getCommentsByPage } from '../api/api';
 import { fetchCommentByPage } from '../slice/pageSlice';
 
 const useActions = () => {
@@ -19,22 +18,26 @@ const useActions = () => {
   }, [dispatch]);
 
   const createComment = useCallback(
-    (newComment: IComment) => {
-      dispatch(addCommentThunk(newComment));
+    async (newComment: IComment) => {
+      await dispatch(addCommentThunk(newComment));
+      loadFirstPage();
     },
     [dispatch],
   );
 
   const deleteComment = useCallback(
-    (id: number) => {
-      dispatch(deleteCommentThunk(id));
+    async (id: number) => {
+      await dispatch(deleteCommentThunk(id));
+      loadFirstPage();
     },
     [dispatch],
   );
 
   const updateComment = useCallback(
-    (updateData: IUpdateData) => {
-      dispatch(updateCommentThunk(updateData));
+    async (updateData: IUpdateData, currentPage: number) => {
+      await dispatch(updateCommentThunk(updateData));
+      dispatch(cancelEditMode());
+      dispatch(fetchCommentByPage(currentPage));
     },
     [dispatch],
   );
@@ -46,7 +49,6 @@ const useActions = () => {
 
   const loadFirstPage = useCallback(() => {
     dispatch(fetchCommentByPage(1));
-    // setCurrentPage(1);
   }, [dispatch]);
 
   return {
