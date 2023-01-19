@@ -8,17 +8,15 @@ function CommentList() {
   const commentList = useAppSelector<IComment[]>(
     ({ comments }) => comments.value,
   );
-  const { getComments, deleteComment, setCurrentPage, setEditMode } =
-    useActions();
+  const { loadFirstPage, deleteComment, setEditMode } = useActions();
 
   useEffect(() => {
-    getComments(1);
+    loadFirstPage();
   }, []);
 
   const clickDelComment = async (id: number) => {
     deleteComment(id);
-    getComments(1);
-    setCurrentPage(1);
+    loadFirstPage();
   };
   const clickUpdateComment = (id: number) => {
     setEditMode(id);
@@ -37,10 +35,10 @@ function CommentList() {
             <Content>{comment.content}</Content>
 
             <Button>
-              <button onClick={() => clickUpdateComment(comment.id)}>
+              <button onClick={() => clickUpdateComment(comment.id!)}>
                 수정
               </button>
-              <button onClick={() => clickDelComment(comment.id)}>삭제</button>
+              <button onClick={() => clickDelComment(comment.id!)}>삭제</button>
             </Button>
 
             <hr />
@@ -85,4 +83,3 @@ const Button = styled.div`
 `;
 
 export default CommentList;
-
