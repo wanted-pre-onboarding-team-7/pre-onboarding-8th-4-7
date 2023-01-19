@@ -1,18 +1,14 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '../hooks';
-import { cancelEditMode } from '../slice/editModeSlice';
+import { useAppSelector } from '../hooks';
 import { IComment } from '../type';
 import useAction from '../hooks/useAction';
 import { EditForm, IForm, NewEmptyForm } from '../class/FormState';
-import { fetchCommentByPage } from '../slice/pageSlice';
 
 function Form() {
   const isEditMode = useAppSelector(({ isEditMode }) => isEditMode.value);
   const { currentPage } = useAppSelector(({ pagination }) => pagination.value);
-  const { commentsByPage } = useAppSelector(
-    ({ pagination }) => pagination.value,
-  );
+
   const commentList = useAppSelector<IComment[]>(
     ({ comments }) => comments.value,
   );
@@ -21,8 +17,7 @@ function Form() {
   const authorRef = useRef<HTMLInputElement>({} as HTMLInputElement);
   const contentRef = useRef<HTMLTextAreaElement>({} as HTMLTextAreaElement);
   const createdAtRef = useRef<HTMLInputElement>({} as HTMLInputElement);
-  const { createComment, updateComment, loadFirstPage } = useAction();
-  const dispatch = useAppDispatch();
+  const { createComment, updateComment } = useAction();
 
   useEffect(() => {
     if (isEditMode.mode) {
@@ -57,15 +52,15 @@ function Form() {
     const newComment = commentData.getCommentObject();
 
     if (isEditMode.mode) {
-      updateComment({
-        commentId: isEditMode.id,
-        commentData: newComment,
-      });
-      dispatch(cancelEditMode());
-      dispatch(fetchCommentByPage(currentPage));
+      updateComment(
+        {
+          commentId: isEditMode.id,
+          commentData: newComment,
+        },
+        currentPage,
+      );
     } else {
       createComment(newComment);
-      loadFirstPage();
     }
 
     setCommentData(new NewEmptyForm());

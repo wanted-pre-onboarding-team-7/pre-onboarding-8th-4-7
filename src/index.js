@@ -9,11 +9,11 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
-  <BrowserRouter>
-    {/* <React.StrictMode> */}
-    <Provider store={store}>
-      <App />
-    </Provider>
-    {/* </React.StrictMode> */}
+  <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <React.StrictMode>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </React.StrictMode>
   </BrowserRouter>,
 );
