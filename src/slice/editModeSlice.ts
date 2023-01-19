@@ -7,10 +7,10 @@ export const EditModeSlice = createSlice({
     editMode: (state, { payload }) => {
       state.value = { mode: true, id: payload };
     },
-    addMode: (state) => {
+    cancelEditMode: (state) => {
       state.value = { ...state.value, mode: false };
     },
   },
 });
-export const { editMode, addMode } = EditModeSlice.actions;
+export const { editMode, cancelEditMode } = EditModeSlice.actions;
 export default EditModeSlice.reducer;

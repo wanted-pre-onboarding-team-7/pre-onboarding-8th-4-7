@@ -8,6 +8,8 @@ import {
 } from '../slice/commentSlice';
 import { editMode } from '../slice/editModeSlice';
 import { useAppDispatch } from './useAppDispatch';
+import { getCommentsByPage } from '../api/api';
+import { fetchCommentByPage } from '../slice/pageSlice';
 
 const useActions = () => {
   const dispatch = useAppDispatch();
@@ -43,9 +45,9 @@ const useActions = () => {
   );
 
   const loadFirstPage = useCallback(() => {
-    getComments(1);
-    setCurrentPage(1);
-  }, [getComments, setCurrentPage]);
+    dispatch(fetchCommentByPage(1));
+    // setCurrentPage(1);
+  }, [dispatch]);
 
   return {
     loadFirstPage,

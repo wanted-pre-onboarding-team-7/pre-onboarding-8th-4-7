@@ -1,18 +1,25 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { IComment } from '../type';
 import { useAppSelector } from '../hooks';
 import useActions from '../hooks/useAction';
 
 function CommentList() {
-  const commentList = useAppSelector<IComment[]>(
-    ({ comments }) => comments.value,
+  const { commentsByPage } = useAppSelector(
+    ({ pagination }) => pagination.value,
   );
-  const { loadFirstPage, deleteComment, setEditMode } = useActions();
+  const { getComments, deleteComment, setEditMode, loadFirstPage } =
+    useActions();
+  const [commentList, setCommentList] = useState<IComment[]>();
 
   useEffect(() => {
+    getComments();
     loadFirstPage();
   }, []);
+
+  useEffect(() => {
+    setCommentList(commentsByPage);
+  }, [commentsByPage]);
 
   const clickDelComment = async (id: number) => {
     deleteComment(id);
